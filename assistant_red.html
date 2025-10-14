@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="src/assets/css/styles.css">
+    <title>SDCA Virtual Assistant</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a0a0a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+    </style>
+</head>
+<body>
+      <nav>
+    <div class="nav-content">
+      <a href="welcome.html" class="logo_1">
+        <img src="pics/Logo_white.png" alt="St. Dominic College of Asia Logo" />
+      </a>
+      <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="welcome.html">Home</a>
+
+         <a href="account.html">Account</a>
+      </div>
+    </div>
+  </nav>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="logo-container">
+                <div class="logo">
+                    <img src="pics/logo-header.png" alt="SDCA Logo">
+                </div>
+            </div>
+            <div class="header-text">
+                <h1>SDCA Virtual Assistant</h1>
+                <p>St. Dominic College of Asia</p>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>Online</span>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="bot-avatar">
+                    <img src="pics/SDCA_LOGO.original.png" alt="SDCA Bot">
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">
+                        Hi there! 👋 Welcome to St. Dominic College of Asia. I'm your virtual assistant, here to help with admissions, enrollment, tuition fees, class schedules, campus services, and contact information. How can I assist you today?
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="handleQuickAction('apply')"><span>🎯 Apply to SDCA</span></button>
+                        <button class="action-btn" onclick="handleQuickAction('programs')"><span>📚 View Programs</span></button>
+                        <button class="action-btn" onclick="handleQuickAction('fees')"><span>💰 Tuition & Fees</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-replies">
+            <button class="quick-reply-btn" onclick="sendMessage('How do I apply?')">💡 How do I apply?</button>
+            <button class="quick-reply-btn" onclick="sendMessage('What programs do you offer?')">📖 Programs</button>
+            <button class="quick-reply-btn" onclick="sendMessage('Tuition fees?')">💳 Tuition</button>
+            <button class="quick-reply-btn" onclick="sendMessage('Where is SDCA?')">📍 Location</button>
+            <button class="quick-reply-btn" onclick="sendMessage('Contact info?')">📞 Contact</button>
+        </div>
+
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Ask me anything about SDCA..." onkeypress="handleKeyPress(event)">
+            <button id="sendBtn" onclick="sendMessage()">Send ✨</button>
+        </div>
+    </div>
+
+    <script>
+        const responses = {
+            "apply": {
+                reply: "To apply to SDCA: 1) Fill out the online application form, 2) Submit your PSA birth certificate and report card, 3) Pay the ₱500 application fee, and 4) Wait for the confirmation email within 3-5 business days.",
+                buttons: [
+                    {label: "🚀 Apply Now", action: "link:/apply"},
+                    {label: "📋 Admission Checklist", action: "link:/apply/checklist"},
+                    {label: "📞 Contact Admissions", action: "link:/contact/admissions"}
+                ],
+                followUpQuestion: "Would you like to see the complete admission requirements?"
+            },
+            "programs": {
+                reply: "SDCA offers diverse programs including: 🩺 BS Nursing, 💼 BS Business Administration, 💻 BS Computer Science, 👨‍🏫 BS Education, 🏨 BS Hospitality Management, and more. Each program is designed with industry-relevant curriculum and experienced faculty.",
+                buttons: [
+                    {label: "📚 View All Programs", action: "link:/programs"},
+                    {label: "📄 Program Details", action: "link:/programs/details"},
+                    {label: "🎯 Career Paths", action: "link:/programs/careers"}
+                ],
+                followUpQuestion: "Which program interests you? I can provide specific details!"
+            },
+            "fees": {
+                reply: "Tuition fees vary by program: BS Nursing ₱40,000–₱50,000/sem, BS Computer Science ₱35,000–₱45,000/sem, BS Business Administration ₱30,000–₱40,000/sem. Fees include lab costs and may have payment plan options.",
+                buttons: [
+                    {label: "💰 View Full Fee Breakdown", action: "link:/fees"},
+                    {label: "📅 Payment Schedule", action: "link:/fees/payment"},
+                    {label: "🎓 Scholarships", action: "link:/scholarships"}
+                ],
+                followUpQuestion: "Would you like information about scholarships and payment plans?"
+            },
+
+            "location": {
+    reply: `
+        St. Dominic College of Asia is located at EMILIO AGUINALDO HIGHWAY TALABA III, CITY OF BACOOR, PHILIPPINES 4102.<br><br>
+        We're easily accessible via public transportation and have ample parking for students and visitors.<br><br>
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1680.742180791518!2d120.9608615876372!3d14.458723786036577!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397cd9273416e43%3A0x96542d86e50a4106!2sSt.%20Dominic%20College%20of%20Asia!5e1!3m2!1sen!2sph!4v1760434574047!5m2!1sen!2sph"
+            width="100%"
+            height="300"
+            style="border:0; border-radius:10px;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    `,
+    buttons: [
+        { label: "🚌 Transportation Guide", action: "transport" },
+        { label: "📞 Contact Us", action: "contact" }
+    ],
+    followUpQuestion: "Need directions or transportation options from your area?"
+},
+
+"transport": {
+        reply: `
+            <strong>🚌 Transportation Guide</strong><br><br>
+
+            <b>From Dasmariñas Bayan:</b><br>
+            • Ride a tricycle or jeepney to Golden City Subdivision.<br>
+            • Stop at St. Dominic College of Asia.<br><br>
+
+            <b>From Imus or Bacoor:</b><br>
+            • Ride a jeepney or bus going to Dasmariñas.<br>
+            • Transfer to a tricycle going to Golden City Subdivision.<br><br>
+
+            <b>🚗 Private Vehicle:</b><br>
+            • Enter via Salawag Road and follow signs to SDCA.<br><br>
+
+        `,
+        buttons: [
+            { label: "🗺️ View Map", action: "location" },
+            { label: "📞 Contact Us", action: "contact" }
+        ],
+        followUpQuestion: "Would you like help with specific directions from your area?"
+    },
+
+
+            "enrollment": {
+                reply: "Enrollment process: 1) Complete admission requirements and get accepted, 2) Submit enrollment forms to the Registrar, 3) Pay tuition fees at the Finance Office, 4) Receive your class schedule, 5) Attend orientation. Enrollment periods are typically 2-3 weeks before each semester.",
+                buttons: [
+                    {label: "📖 Enrollment Guide", action: "enroll"},
+                    {label: "✅ Requirements List", action: "enroll/requirements"},
+                    {label: "📅 Important Dates", action: "calendar"}
+                ],
+                followUpQuestion: "Need help with a specific enrollment step?"
+            },
+            "schedule": {
+                reply: "Class schedules are available through the Student Portal after enrollment. You can view your schedule, room assignments, instructor details, and any schedule changes online. For schedule concerns or conflicts, contact the Registrar's Office.",
+                buttons: [
+                    {label: "🖥️ Student Portal", action: "portal"},
+                    {label: "📞 Contact Registrar", action: "contact/registrar"},
+                    {label: "📅 Academic Calendar", action: "calendar"}
+                ],
+                followUpQuestion: "Do you need help accessing the Student Portal?"
+            },
+            "contact": {
+               reply: `
+        <strong>📞 Contact Information</strong><br><br>
+
+        <b>Basic Education</b><br>
+        📱 +63 998 551 7972<br>
+        ✉️ bedadmission@sdca.edu.ph<br><br>
+
+        <b>Higher Education</b><br>
+        📱 +63 998 551 8001<br>
+        ✉️ hedadmission@sdca.edu.ph<br><br>
+
+        <b>School of Medicine</b><br>
+        📱 +63 998 551 8021<br>
+        ✉️ som_admission@sdca.edu.ph<br><br>
+
+        <b>🕐 Office Hours</b><br>
+        Monday–Friday: 8:00 AM – 5:00 PM<br>
+        Saturday: 8:00 AM – 12:00 PM<br><br>
+        🏫 Visit the Admin Building for in-person assistance.
+    `,
+                buttons: [
+                    {label: "📞 Contact Directory", action: "contact"},
+                    {label: "✉️ Send Message", action: "message"},
+                    {label: "📱 Social Media", action: "social"}
+                ],
+                followUpQuestion: "Which office would you like to contact?"
+            },
+            "scholarship": {
+                reply: "SDCA offers various scholarships: Academic Excellence (based on grades), Athletic Scholarships, Financial Assistance, Employee Dependents, and External Scholarships. Requirements vary by scholarship type. Applications are typically reviewed each semester.",
+                buttons: [
+                    {label: "🎓 Scholarship Programs", action: "scholarships"},
+                    {label: "📋 Application Form", action: "scholarships/apply"},
+                    {label: "📞 Contact Financial Aid", action: "contact/financial-aid"}
+                ],
+                followUpQuestion: "Which scholarship program would you like to know more about?"
+            },
+            "default": {
+                reply: "I'm here to help with admissions, enrollment, tuition, schedules, programs, and campus services. Could you please clarify your question? You can ask about applications, view programs, check fees, or get contact information.",
+                buttons: [
+                    {label: "❓ View FAQs", action: "faq"},
+                    {label: "💬 Contact Support", action: "contact"},
+                    {label: "🏠 Visit Homepage", action: ""}
+                ],
+                followUpQuestion: "What specific information do you need?"
+            }
+        };
+
+        function detectIntent(message) {
+            const msg = message.toLowerCase();
+            
+            if (msg.includes('apply') || msg.includes('application') || msg.includes('admission')) return 'apply';
+            if (msg.includes('program') || msg.includes('course') || msg.includes('degree') || msg.includes('major')) return 'programs';
+            if (msg.includes('fee') || msg.includes('tuition') || msg.includes('cost') || msg.includes('payment') || msg.includes('price')) return 'fees';
+            if (msg.includes('location') || msg.includes('address') || msg.includes('where') || msg.includes('direction')) return 'location';
+            if (msg.includes('enroll') || msg.includes('registration') || msg.includes('register')) return 'enrollment';
+            if (msg.includes('schedule') || msg.includes('class') || msg.includes('time') || msg.includes('timetable')) return 'schedule';
+            if (msg.includes('contact') || msg.includes('phone') || msg.includes('email') || msg.includes('call')) return 'contact';
+            if (msg.includes('scholarship') || msg.includes('financial aid') || msg.includes('discount')) return 'scholarship';
+            
+            return 'default';
+        }
+
+        function sendMessage(text = null) {
+            const input = document.getElementById('userInput');
+            const message = text || input.value.trim();
+            
+            if (!message) return;
+
+            addUserMessage(message);
+            input.value = '';
+
+            createParticles();
+            showTyping();
+            
+            setTimeout(() => {
+                hideTyping();
+                const intent = detectIntent(message);
+                const response = responses[intent];
+                
+                addBotMessage(response);
+            }, 1200);
+        }
+
+        function addUserMessage(text) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <div class="message-bubble">${text}</div>
+                </div>
+            `;
+            messagesDiv.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function addBotMessage(response) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            
+            let buttonsHtml = '';
+            if (response.buttons && response.buttons.length > 0) {
+                buttonsHtml = '<div class="action-buttons">';
+                response.buttons.forEach(btn => {
+                    buttonsHtml += `<button class="action-btn" onclick="handleAction('${btn.action}')"><span>${btn.label}</span></button>`;
+                });
+                buttonsHtml += '</div>';
+            }
+
+            let followUpHtml = '';
+            if (response.followUpQuestion) {
+                followUpHtml = `<div class="follow-up">💭 ${response.followUpQuestion}</div>`;
+            }
+
+            messageDiv.innerHTML = `
+                <div class="bot-avatar">
+                    <img src="pics/SDCA_LOGO.original.png" alt="SDCA Bot">
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">${response.reply}</div>
+                    ${buttonsHtml}
+                    ${followUpHtml}
+                </div>
+            `;
+            messagesDiv.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function showTyping() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator active';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <div class="bot-avatar">
+                    <img src="pics/SDCA_LOGO.original.png" alt="SDCA Bot">
+                </div>
+                <div class="typing-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            `;
+            messagesDiv.appendChild(typingDiv);
+            scrollToBottom();
+        }
+
+        function hideTyping() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        }
+
+       function handleAction(action) {
+    // Show typing dots first
+    showTyping();
+
+    // Simulate short delay before bot responds
+    setTimeout(() => {
+        hideTyping();
+
+        // Internal chatbot action (like "transport", "contact", "location")
+        if (responses[action]) {
+            const next = responses[action];
+            addBotMessage(next);
+        } else {
+            addBotMessage({ reply: "⚠️ Sorry, I couldn’t find that section." });
+            console.warn("Unknown action:", action);
+        }
+
+    }, 1200);
+}
+
+        function handleQuickAction(type) {
+            const messages = {
+                'apply': 'How do I apply to SDCA?',
+                'programs': 'What programs do you offer?',
+                'fees': 'How much is the tuition?'
+            };
+            sendMessage(messages[type]);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function scrollToBottom() {
+            const messagesDiv = document.getElementById('chatMessages');
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function createParticles() {
+            const container = document.querySelector('.chat-messages');
+            for (let i = 0; i < 5; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 3000);
+            }
+        }
+
+        // Add welcome animation
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                createParticles();
+            }, 500);
+        });
+
+    
+
+    </script>
+</body>
+</html>
+                

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SDCU Portal — Sign In / Sign Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/assets/css/styles.css">
+<style>
+
+
+::placeholder {
+  color: white;
+  opacity: 1; /
+}
+
+
+:-ms-input-placeholder { color: white; }
+::-ms-input-placeholder { color: white; }
+
+
+  :root{
+    --bg1:#1a0a0a;
+    --bg2:#1a0a0a;
+    --glass-bg: rgba(255,255,255,0.08);
+    --glass-border: rgba(255,255,255,0.18);
+    --card-radius: 18px;
+    --accent: linear-gradient(135deg,#e45454 0%,#ffffff9c 100%);
+    --muted:#9aa0ad;
+    --danger:#e74c3c;
+    --success:#27ae60;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    background: radial-gradient(circle at 10% 30%, rgba(255,255,255,0.03) 0%, transparent 15%),
+                linear-gradient(135deg,var(--bg1) 0%, var(--bg2) 100%);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px;
+    color:#121212;
+  }
+
+  
+</style>
+</head>
+<body>
+
+    <nav>
+    <div class="nav-content">
+      <a href="welcome.html" class="logo_1">
+        <img src="pics/Logo_white.png" alt="St. Dominic College of Asia Logo" />
+      </a>
+      <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="welcome.html">Home</a>
+        <a href="account.html">Account</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap" role="main" aria-labelledby="welcomeTitle">
+    <section class="panel-left fade-up" aria-hidden="false">
+      <div class="brand">
+        <div class="avatar" aria-hidden="true"><img src="pics/SDCA_LOGO.original.png " alt="SDCA Bot" style="width: 80px; margin-left: -4px;"></div>
+        <div>
+          <h1>SDCU Portal</h1>
+          <p>Student Dashboard & Control Unit secure student account center</p>
+        </div>
+      </div>
+
+      <h2 id="welcomeTitle" class="hero-title">Welcome back</h2>
+      <p class="hero-desc">Sign in to view your classes, schedules, announcements, and more. New here? Create an account using your Student Number and we'll assign your official SDCU email automatically.</p>
+
+      <div class="features" aria-hidden="true">
+        <div class="feature">🔒 Secure SSO</div>
+        <div class="feature">📧 Auto student email</div>
+        <div class="feature">⚡ Fast access</div>
+      </div>
+    </section>
+
+    <section class="card fade-up delay" aria-label="Account forms">
+      <div class="top">
+        <div class="logo-circle" aria-hidden="true"><img src="pics/SDCA_LOGO.original.png" alt="SDCA Bot" style="width: 100px; margin-left: -7px;"></div>
+        <h2>Sign In</h2>
+        <p class="subtitle">Sign in to your SDCU account</p>
+      </div>
+
+      <!-- Sign In -->
+      <form id="signInForm" autocomplete="on" aria-labelledby="signinHeading">
+        <div class="field" role="group" aria-label="Sign in email">
+          <label for="signInEmail">Email</label>
+          <input id="signInEmail" class="input" type="email" placeholder="your.email@sdcu.edu.ph" required />
+        </div>
+
+        <div class="field">
+          <label for="signInPassword">Password</label>
+          <input id="signInPassword" class="input" type="password" placeholder="Enter your password" required />
+        </div>
+
+        <div class="field">
+          <button type="submit" class="btn btn-primary" id="signInBtn">Sign In</button>
+        </div>
+
+        <div class="hint muted">Don't have an account? <button type="button" class="btn btn-ghost" id="showSignUp">Create an Account</button></div>
+        <div class="divider" role="separator" aria-hidden="true"></div>
+      </form>
+
+      <!-- Sign Up (hidden UI) -->
+      <form id="signUpForm" class="hidden" aria-hidden="true">
+        <div class="top" style="text-align:left;margin-bottom:10px">
+          <h2 style="color:white;margin:0">Create Account</h2>
+          <p class="subtitle">Use your 8-digit Student Number</p>
+        </div>
+
+        <div id="step1">
+          <div class="field">
+            <label for="studentNumber">Student Number</label>
+            <input id="studentNumber" class="input" type="text" placeholder="Enter 8-digit student number" inputmode="numeric" pattern="\d*" maxlength="8" autocomplete="off" required />
+            <div id="statusWrap" class="small muted" aria-live="polite"></div>
+            <div id="studentError" class="error" style="display:none"></div>
+            <div id="studentSuccess" class="success" style="display:none"></div>
+          </div>
+          <div class="field">
+            <button type="button" id="verifyBtn" class="btn btn-primary">Verify Student Number</button>
+          </div>
+        </div>
+
+        <div id="step2" style="display:none">
+          <div class="field">
+            <label for="generatedEmail">Email</label>
+            <input id="generatedEmail" class="input" type="email" readonly />
+            <div class="small muted">This is your official SDCU student email</div>
+          </div>
+
+          <div class="field">
+            <label for="newPassword">New Password</label>
+            <input id="newPassword" class="input" type="password" placeholder="Create a strong password" required />
+            <div class="strength" aria-hidden="true"><div id="strengthBar" class="strength-bar"></div></div>
+            <div id="pwHint" class="small muted">Use at least 8 characters including letters and numbers.</div>
+          </div>
+
+          <div class="field">
+            <label for="repeatPassword">Confirm Password</label>
+            <input id="repeatPassword" class="input" type="password" placeholder="Repeat password" required />
+            <div id="pwError" class="error" style="display:none">Passwords do not match</div>
+          </div>
+
+          <div class="row">
+            <button type="submit" id="createAccountBtn" class="btn btn-primary" disabled>Create Account</button>
+            <button type="button" id="backBtn" class="btn btn-ghost">Back</button>
+          </div>
+        </div>
+
+        <div class="hint" style="margin-top:12px"><button type="button" id="backToSignIn" class="btn btn-ghost">Back to Sign In</button></div>
+      </form>
+    </section>
+  </main>
+
+  <script src="src/assets/js/account.js"></script>
+</body>
+</html>
