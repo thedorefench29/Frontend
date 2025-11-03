@@ -1,6 +1,6 @@
 {
-    "name": "sdcu_test",
-    "short_name": "sdcu_test",
+    "name": "sdca_ai_assistant",
+    "short_name": "sdca_ai_assistant",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-// ignore: deprecated_member_use, avoid_web_libraries_in_flutter
-import 'dart:html' as html;
 import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:ui_web' as ui;
+import 'package:web/web.dart' as web;
 import '../services/auth_service.dart';
 
 class _TopNav extends StatefulWidget {
@@ -495,7 +494,7 @@ class _AssistantPageState extends State<AssistantPage> {
     
     // Handle external URL navigation
     if (normalized == 'home' && kIsWeb) {
-      html.window.open('https://stdominiccollege.edu.ph/', '_blank');
+      web.window.open('https://stdominiccollege.edu.ph/', '_blank');
       return;
     }
     
@@ -1468,26 +1467,35 @@ class _WebMapViewState extends State<_WebMapView> {
   @override
   void initState() {
     super.initState();
-    if (kIsWeb && !_registered) {
-      // ignore: undefined_prefixed_name
-      ui.platformViewRegistry.registerViewFactory(_viewTypeId, (int viewId) {
-        final element = html.IFrameElement()
-          ..src = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1680.742180791518!2d120.9608615876372!3d14.458723786036577!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397cd9273416e43%3A0x96542d86e50a4106!2sSt.%20Dominic%20College%20of%20Asia!5e1!3m2!1sen!2sph!4v1760434574047!5m2!1sen!2sph'
-          ..style.border = '0'
-          ..style.borderRadius = '10px'
-          ..width = '100%'
-          ..height = '300'
-          ..allowFullscreen = true
-          ..referrerPolicy = 'no-referrer-when-downgrade';
-        return element;
-      });
+    try {
+      if (kIsWeb && !_registered) {
+        // ignore: undefined_prefixed_name
+        ui.platformViewRegistry.registerViewFactory(_viewTypeId, (int viewId) {
+          final element = web.HTMLIFrameElement()
+            ..src = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1680.742180791518!2d120.9608615876372!3d14.458723786036577!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397cd9273416e43%3A0x96542d86e50a4106!2sSt.%20Dominic%20College%20of%20Asia!5e1!3m2!1sen!2sph!4v1760434574047!5m2!1sen!2sph'
+            ..style.border = '0'
+            ..style.borderRadius = '10px'
+            ..width = '100%'
+            ..height = '300'
+            ..allowFullscreen = true
+            ..referrerPolicy = 'no-referrer-when-downgrade';
+          return element;
+        });
+        _registered = true;
+      }
+    } catch (e) {
+      // Platform view registration may not be available on all platforms
       _registered = true;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!kIsWeb) return const SizedBox.shrink();
-    return HtmlElementView(viewType: _viewTypeId);
+    if (!kIsWeb || !_registered) return const SizedBox.shrink();
+    try {
+      return HtmlElementView(viewType: _viewTypeId);
+    } catch (e) {
+      return const SizedBox.shrink();
+    }
   }
 }
